@@ -4,6 +4,7 @@ from scipy import stats
 import statsmodels.stats.multitest as smm
 from sklearn.preprocessing import scale
 from sklearn.decomposition import PCA
+import argparse
 
 def load_data(file_path):
     df = pd.read_csv(file_path, sep='\t', index_col=0)
@@ -69,6 +70,10 @@ def save_results(results, output_file):
     result_df.to_csv(output_file, sep='\t', index=False)
 
 def main():
+    myParser = argparse.ArgumentParser(description='Local alignment program')
+    myParser.add_argument('count_data', '--cd', type=str)
+    myParser.add_argument('output_file', '--out', type=int)
+    
     countdata = load_data("~/GSE221626_counts.txt")
     metadata = define_metadata(countdata)
     countdata = normalize_counts(countdata)
