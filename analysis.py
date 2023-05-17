@@ -80,11 +80,18 @@ class DifferentialExpression:
 def main():
     parser = argparse.ArgumentParser(description='Calculate differential gene expression.')
     parser.add_argument('data_file', type=str, help='Path to the input data file.')
-    parser.add_argument('metadata_file', type=str, help='Path to the input metadata file.')
     parser.add_argument('output_file', type=str, help='Path to the output file.')
     args = parser.parse_args()
 
-    de = DifferentialExpression(args.data_file, args.metadata_file)
+    df = pd.read_csv(args.data_file, sep='\t', index_col=0)
+
+    # Generate the metadata based on the column names
+    conditions = df.columns.str.split("_", n=1, expand=True)[0]
+    metadata = pd.DataFrame(conditions, columns=['condition'])
+    metadata.index.name = 'sample_id'
+    metadata.to_csv('metadata.csv', sep='\t')  # Save metadata to file for future reference
+
+    de = DifferentialExpression(args.data_file, 'metadata.csv')
     de.calculate()
     de.save_results(args.output_file)
 
