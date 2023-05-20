@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 from scipy import stats
 import statsmodels.stats.multitest as smm
 from sklearn.preprocessing import scale
@@ -7,11 +6,16 @@ from sklearn.decomposition import PCA
 import argparse
 
 def load_data(file_path):
+    # read in count data
     df = pd.read_csv(file_path, sep='\t', index_col=0)
+    # for our dataset, we drop the final col because it has only one variant
+    df = df.iloc[:, :-1] 
+    # add pseudocount for values of zero
+    df.replace(0, 0.1, inplace=True) 
     if df.isnull().sum().sum() > 0:
         raise ValueError("Input data contains missing values.")
-    if df.nunique(axis=1).min() == 1:
-        raise ValueError("Input data contains rows with constant values.")
+    #if df.nunique(axis=1).min() == 1:
+      #  raise ValueError("Input data contains rows with constant values.")
     return df
 
 def define_metadata(df):
@@ -30,8 +34,10 @@ def normalize_counts(df, pseudocount=1):
 
 def batch_correction(df, n_components=2):
     pca = PCA(n_components=n_components)
-    pca_result = pca.fit_transform(scale(df.T))
-    corrected = df - pca_result.T.dot(pca.components_)
+    df_T = df.T
+    pca_result = pca.fit_transform(scale(df_T))
+    corrected_T = df_T - pca_result.dot(pca.components_)
+    corrected = corrected_T.T
     return corrected
 
 def calculate_fold_changes(control_data, treatment_data):
@@ -71,15 +77,18 @@ def save_results(results, output_file):
 
 def main():
     myParser = argparse.ArgumentParser(description='Local alignment program')
-    myParser.add_argument('count_data', '--cd', type=str)
-    myParser.add_argument('output_file', '--out', type=int)
+    myParser.add_argument('-c', '--countdata', type=str)
+    myParser.add_argument('-o', '--output_file', type=str)
+    inputArgs = myParser.parse_args()
     
-    countdata = load_data("~/GSE221626_counts.txt")
+    #countdata = load_data("~/GSE221626_counts.txt")
+    countdata = load_data(inputArgs.countdata)
+    outfile = inputArgs.output_file
     metadata = define_metadata(countdata)
     countdata = normalize_counts(countdata)
     countdata = batch_correction(countdata)
     results = differential_expression_analysis(countdata, metadata)
-    save_results(results, "~/benchmark.txt")
+    save_results(results, outfile)
 
 if __name__ == "__main__":
     main()
