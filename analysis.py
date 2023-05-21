@@ -44,8 +44,11 @@ def calculate_fold_changes(control_data, treatment_data):
     return treatment_data.mean(axis=1) / control_data.mean(axis=1)
 
 def calculate_p_values(control_data, treatment_data):
-    _, p_values = stats.ttest_ind(control_data.T, treatment_data.T, equal_var=False)
-    return p_values
+    p_values = []
+    for gene_id in control_data.index:
+        _, p_value = stats.mannwhitneyu(control_data.loc[gene_id], treatment_data.loc[gene_id], alternative='two-sided')
+        p_values.append(p_value)
+    return pd.Series(p_values, index=control_data.index)
 
 def correct_p_values(p_values):
     _, p_values_corrected, _, _ = smm.multipletests(p_values, method='fdr_bh')
@@ -60,7 +63,7 @@ def differential_expression_analysis(countdata, metadata):
         treatment_data = countdata.loc[:, metadata['condition'] == condition]
         fold_changes = calculate_fold_changes(control_data, treatment_data)
         p_values = calculate_p_values(control_data, treatment_data)
-        p_values_corrected = correct_p_values(p_values)
+        p_values_corrected = correct_p_values(p_values.values)
         result = pd.DataFrame({
             'gene_id': countdata.index,
             'condition': condition,
