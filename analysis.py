@@ -5,6 +5,7 @@ import statsmodels.stats.multitest as smm
 from sklearn.preprocessing import scale
 from sklearn.decomposition import PCA
 import argparse
+import matplotlib.pyplot as plt
 
 def load_data(file_path):
     # read in count data
@@ -82,6 +83,37 @@ def differential_expression_analysis(countdata, metadata, padj_type):
 def save_results(results, output_file):
     result_df = pd.concat(results)
     result_df.to_csv(output_file, sep='\t', index=False)
+
+def volcano_plot(results):
+    result_df = pd.concat(results)
+
+    plt.figure(figsize=(10,10))
+
+    pvalue_threshold = 0.05
+    fc_threshold = 0
+
+    result_df = result_df.rename({"Unnamed: 0" : "gene_id"}, axis='columns')
+
+
+    plt.xlabel('log2FoldChange') #x label
+    plt.ylabel('-log10pvalue') #y label
+    plt.title('Differential Expression')
+
+    #plot scatter plot while labeling significant expression with red based on padj<0.05 AND log2fold > 0 or log2fold < 0
+    plt.scatter(deseqresults['log2FoldChange'], -np.log10(deseqresults['padj']), c = np.where((deseqresults["padj"] < 0.05)  & ((deseqresults["log2FoldChange"] < 0) | (deseqresults["log2FoldChange"] > 0)), "red", "black"))
+
+    #using threshold of p value 5% and taking top 10
+    deseqresults = deseqresults[deseqresults['p_value_corrected'] < 0.05]
+    pSort =  deseqresults.sort_values('p_value_corrected')
+    top_ten = pSort.iloc[:10]
+
+    for index, row in top_ten.iterrows():
+        plt.annotate(row["gene_id"], (row["log2FoldChange"], -np.log10(row["pvalue"])))
+        
+    plt.savefig("VolcanoPlotDeseq2.png")
+    
+
+
 
 def main():
     myParser = argparse.ArgumentParser(description='Local alignment program')
