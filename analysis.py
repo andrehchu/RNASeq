@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from scipy import stats
 import statsmodels.stats.multitest as smm
 from sklearn.preprocessing import scale
@@ -41,7 +42,7 @@ def batch_correction(df, n_components=2):
     return corrected
 
 def calculate_fold_changes(control_data, treatment_data):
-    return treatment_data.mean(axis=1) / control_data.mean(axis=1)
+    return np.log2(treatment_data.mean(axis=1) / control_data.mean(axis=1))
 
 def calculate_p_values(control_data, treatment_data):
     p_values = []
@@ -50,11 +51,15 @@ def calculate_p_values(control_data, treatment_data):
         p_values.append(p_value)
     return pd.Series(p_values, index=control_data.index)
 
-def correct_p_values(p_values):
-    _, p_values_corrected, _, _ = smm.multipletests(p_values, method='fdr_bh')
-    return p_values_corrected
+def correct_p_values(p_values, padj_type):
+    if (padj_type == 'bonferroni'):
+        _, p_values_corrected, _, _ = smm.multipletests(p_values, method='bonferroni')
+        return p_values_corrected
+    else:
+        _, p_values_corrected, _, _ = smm.multipletests(p_values, method='fdr_bh')
+        return p_values_corrected
 
-def differential_expression_analysis(countdata, metadata):
+def differential_expression_analysis(countdata, metadata, padj_type):
     results = []
     for condition in metadata['condition'].unique():
         if condition == "WT":
@@ -63,7 +68,7 @@ def differential_expression_analysis(countdata, metadata):
         treatment_data = countdata.loc[:, metadata['condition'] == condition]
         fold_changes = calculate_fold_changes(control_data, treatment_data)
         p_values = calculate_p_values(control_data, treatment_data)
-        p_values_corrected = correct_p_values(p_values.values)
+        p_values_corrected = correct_p_values(p_values.values, padj_type)
         result = pd.DataFrame({
             'gene_id': countdata.index,
             'condition': condition,
@@ -82,15 +87,17 @@ def main():
     myParser = argparse.ArgumentParser(description='Local alignment program')
     myParser.add_argument('-c', '--countdata', type=str)
     myParser.add_argument('-o', '--output_file', type=str)
+    myParser.add_argument('-padj', '--pvalue_adjusted', type=str)
     inputArgs = myParser.parse_args()
     
     #countdata = load_data("~/GSE221626_counts.txt")
     countdata = load_data(inputArgs.countdata)
     outfile = inputArgs.output_file
+    pval_adj = inputArgs.pvalue_adjusted
     metadata = define_metadata(countdata)
     countdata = normalize_counts(countdata)
     countdata = batch_correction(countdata)
-    results = differential_expression_analysis(countdata, metadata)
+    results = differential_expression_analysis(countdata, metadata, pval_adj)
     save_results(results, outfile)
 
 if __name__ == "__main__":
