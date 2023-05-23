@@ -13,7 +13,7 @@ def load_data(file_path):
     # for our dataset, we drop the final col because it has only one variant
     df = df.iloc[:, :-1] 
     # add pseudocount for values of zero
-    df.replace(0, 0.1, inplace=True) 
+    df.replace(0, 1, inplace=True) 
     if df.isnull().sum().sum() > 0:
         raise ValueError("Input data contains missing values.")
     #if df.nunique(axis=1).min() == 1:
