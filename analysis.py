@@ -92,7 +92,7 @@ def volcano_plot(results):
     pvalue_threshold = 0.05
     fc_threshold = 0
 
-    result_df = result_df.rename({"Unnamed: 0" : "gene_id"}, axis='columns')
+    #result_df = result_df.rename({"Unnamed: 0" : "gene_id"}, axis='columns')
 
 
     plt.xlabel('log2FoldChange') #x label
@@ -100,7 +100,7 @@ def volcano_plot(results):
     plt.title('Differential Expression')
 
     #plot scatter plot while labeling significant expression with red based on padj<0.05 AND log2fold > 0 or log2fold < 0
-    plt.scatter(deseqresults['log2FoldChange'], -np.log10(deseqresults['padj']), c = np.where((deseqresults["padj"] < 0.05)  & ((deseqresults["log2FoldChange"] < 0) | (deseqresults["log2FoldChange"] > 0)), "red", "black"))
+    plt.scatter(result_df['fold_change'], -np.log10(result_df['p_value_corrected']), c = np.where((deseqresults["p_value_corrected"] < 0.05)  & ((deseqresults["fold_change"] < 0) | (deseqresults["fold_change"] > 0)), "red", "black"))
 
     #using threshold of p value 5% and taking top 10
     deseqresults = deseqresults[deseqresults['p_value_corrected'] < 0.05]
@@ -108,9 +108,10 @@ def volcano_plot(results):
     top_ten = pSort.iloc[:10]
 
     for index, row in top_ten.iterrows():
-        plt.annotate(row["gene_id"], (row["log2FoldChange"], -np.log10(row["pvalue"])))
+        plt.annotate(row["gene_id"], (row["fold_change"], -np.log10(row["pvalue"])))
         
-    plt.savefig("VolcanoPlotDeseq2.png")
+    #plt.savefig("VolcanoPlotDeseq2.png")
+    plt.show()
     
 
 
