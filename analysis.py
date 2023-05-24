@@ -4,6 +4,7 @@ import statsmodels.stats.multitest as smm
 from sklearn.preprocessing import scale
 from sklearn.decomposition import PCA
 import argparse
+import numpy as np
 
 def load_data(file_path):
     # read in count data
@@ -16,6 +17,8 @@ def load_data(file_path):
         raise ValueError("Input data contains missing values.")
     #if df.nunique(axis=1).min() == 1:
       #  raise ValueError("Input data contains rows with constant values.")
+    if (df < 0).any().any():
+        print("Negative values in raw data: ", df[df < 0])
     return df
 
 def define_metadata(df):
@@ -30,18 +33,38 @@ def normalize_counts(df, pseudocount=1):
     df = df.div(gm, axis=0)
     size_factors = df.median(axis=0)
     df = df.div(size_factors, axis=1)
+    if (df < 0).any().any():
+        print("Negative values after normalization: ", df[df < 0])
     return df
 
-def batch_correction(df, n_components=2):
+def batch_correction(df, n_components=2, pseudocount=0.1):
+    # Identify constant rows
+    constant_rows = df.index[df.nunique(axis=1) <= 1]
+    
+    # Separate constant and variable rows
+    df_variable = df.drop(constant_rows)
+    df_constant = df.loc[constant_rows]
+    
+    # Perform PCA and batch correction on variable rows
+    df_T = df_variable.T
     pca = PCA(n_components=n_components)
-    df_T = df.T
     pca_result = pca.fit_transform(scale(df_T))
     corrected_T = df_T - pca_result.dot(pca.components_)
-    corrected = corrected_T.T
+    corrected_variable = corrected_T.T
+    
+    corrected_variable = corrected_variable.clip(lower=pseudocount)
+
+    # Concatenate variable and constant rows
+    corrected = pd.concat([corrected_variable, df_constant])
+    
     return corrected
 
-def calculate_fold_changes(control_data, treatment_data):
-    return treatment_data.mean(axis=1) / control_data.mean(axis=1)
+def calculate_fold_changes(control_data, treatment_data, pseudocount=0.1):
+    fc = (treatment_data.mean(axis=1) + pseudocount) / (control_data.mean(axis=1) + pseudocount)
+    if fc.min() <= 0:
+        print('Invalid values in fold changes:', fc[fc <= 0])
+    log2_fc = np.log2(fc)
+    return log2_fc
 
 def calculate_p_values(control_data, treatment_data):
     p_values = []
@@ -67,7 +90,7 @@ def differential_expression_analysis(countdata, metadata):
         result = pd.DataFrame({
             'gene_id': countdata.index,
             'condition': condition,
-            'fold_change': fold_changes,
+            'log2_fold_change': fold_changes,
             'p_value': p_values,
             'p_value_corrected': p_values_corrected,
         })
