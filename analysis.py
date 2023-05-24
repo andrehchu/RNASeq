@@ -134,9 +134,9 @@ def volcano_plot(results):
 
 def main():
     myParser = argparse.ArgumentParser(description='Local alignment program')
-    myParser.add_argument('-c', '--countdata', type=str)
-    myParser.add_argument('-o', '--output_file', type=str)
-    myParser.add_argument('-padj', '--pvalue_adjusted', type=str)
+    myParser.add_argument('-c', '--countdata', help="Input counts txt file", type=str)
+    myParser.add_argument('-o', '--output_file', help="Write output to file", type=str)
+    myParser.add_argument('-padj', '--pvalue_adjusted', help="P value adjustment type. " "Default: fdr_bh",type=str)
     inputArgs = myParser.parse_args()
     
     #countdata = load_data("~/GSE221626_counts.txt")
