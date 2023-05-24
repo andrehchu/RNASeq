@@ -89,7 +89,7 @@ def differential_expression_analysis(countdata, metadata, padj_type):
         result = pd.DataFrame({
             'gene_id': countdata.index,
             'condition': condition,
-            'fold_change': fold_changes,
+            'log2fold_change': fold_changes,
             'p_value': p_values,
             'p_value_corrected': p_values_corrected,
         })
@@ -116,20 +116,33 @@ def volcano_plot(results):
     plt.title('Differential Expression')
 
     #plot scatter plot while labeling significant expression with red based on padj<0.05 AND log2fold > 0 or log2fold < 0
-    plt.scatter(result_df["fold_change"], -np.log10(result_df["p_value_corrected"]), c = np.where((deseqresults["p_value_corrected"] < 0.05)  & ((deseqresults["fold_change"] < 0) | (deseqresults["fold_change"] > 0)), "red", "black"))
+    plt.scatter(result_df["log2fold_change"], -np.log10(result_df["p_value_corrected"]), c = np.where((result_df["p_value_corrected"] < 0.05)  & ((result_df["log2fold_change"] < 0) | (result_df["log2fold_change"] > 0)), "red", "black"))
 
     #using threshold of p value 5% and taking top 10
-    deseqresults = deseqresults[deseqresults['p_value_corrected'] < 0.05]
-    pSort =  deseqresults.sort_values('p_value_corrected')
+    result_df = result_df[result_df['p_value_corrected'] < 0.05]
+    pSort =  result_df.sort_values('p_value_corrected')
     top_ten = pSort.iloc[:10]
 
     for index, row in top_ten.iterrows():
-        plt.annotate(row["gene_id"], (row["fold_change"], -np.log10(row["pvalue"])))
+        plt.annotate(row["gene_id"], (row["log2fold_change"], -np.log10(row["pvalue"])))
         
     #plt.savefig("VolcanoPlotDeseq2.png")
     plt.show()
     
+def ma_plot(results, pval_thresh){
+    result_df = pd.concat(results)
 
+    plt.figure(figsize=(10,10))
+
+    #color points red if p value is less than 0.1 or choose other threshold value
+
+    plt.xlabel('Mean of Normalized Counts') #x label
+    plt.ylabel('log2FoldChange') #y label
+    plt.title('TBD')
+
+    plt.scatter(result_df["log2fold_change"], result_df["mean_normalizedcounts"], c = np.where((result_df["p_value_corrected"] < pval_thresh), "red", "black"))
+
+}
 
 
 def main():
@@ -137,17 +150,21 @@ def main():
     myParser.add_argument('-c', '--countdata', help="Input counts txt file", type=str)
     myParser.add_argument('-o', '--output_file', help="Write output to file", type=str)
     myParser.add_argument('-padj', '--pvalue_adjusted', help="P value adjustment type. " "Default: fdr_bh",type=str)
+    myParser.add_argument('-pval_thresh', '--pvalue_threshold', help="P value threshold for MA-Plot" ,type=str)
     inputArgs = myParser.parse_args()
     
     #countdata = load_data("~/GSE221626_counts.txt")
     countdata = load_data(inputArgs.countdata)
     outfile = inputArgs.output_file
     pval_adj = inputArgs.pvalue_adjusted
+    pval_thresh = inputArgs.pvalue_threshold
     metadata = define_metadata(countdata)
     countdata = normalize_counts(countdata)
     countdata = batch_correction(countdata)
     results = differential_expression_analysis(countdata, metadata, pval_adj)
     save_results(results, outfile)
+    volcano_plot(results)
+    ma_plot(results, pval_thresh)
 
 if __name__ == "__main__":
     main()
