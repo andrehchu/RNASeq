@@ -13,7 +13,7 @@ def load_data(file_path):
     # for our dataset, we drop the final col because it has only one variant
     df = df.iloc[:, :-1] 
     # add pseudocount for values of zero
-    df.replace(0, 1, inplace=True) 
+    df.replace(0, 0.1, inplace=True) 
     if df.isnull().sum().sum() > 0:
         raise ValueError("Input data contains missing values.")
     #if df.nunique(axis=1).min() == 1:
@@ -32,14 +32,30 @@ def normalize_counts(df, pseudocount=1):
     df = df.div(gm, axis=0)
     size_factors = df.median(axis=0)
     df = df.div(size_factors, axis=1)
+    if (df < 0).any().any():
+        print("Negative values after normalization: ", df[df < 0])
     return df
 
-def batch_correction(df, n_components=2):
+def batch_correction(df, n_components=2, pseudocount=0.1):
+    #Identify constant rows
+    constant_rows = df.index[df.nununiqe(axis=1) <= 1]
+
+    #Separate constant and variable rows
+    df_variable = df.drop(constant_rows)
+    df_constant = df.loc[constant_rows]
+
+    #Perform PCA and batch correction on variable rows
+    df_T = df_variable.T
     pca = PCA(n_components=n_components)
-    df_T = df.T
     pca_result = pca.fit_transform(scale(df_T))
     corrected_T = df_T - pca_result.dot(pca.components_)
-    corrected = corrected_T.T
+    corrected_variable = corrected_T.T
+
+    corrected_variable = corrected_variable.clip(lower=pseudocount)
+
+    #concatenate variable and constant rows
+    corrected = pd.concat([corrected_variable, df_constant])
+
     return corrected
 
 def calculate_fold_changes(control_data, treatment_data):
