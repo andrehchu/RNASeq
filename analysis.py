@@ -116,7 +116,7 @@ def volcano_plot(results):
     plt.title('Differential Expression')
 
     #plot scatter plot while labeling significant expression with red based on padj<0.05 AND log2fold > 0 or log2fold < 0
-    plt.scatter(result_df['fold_change'], -np.log10(result_df['p_value_corrected']), c = np.where((deseqresults["p_value_corrected"] < 0.05)  & ((deseqresults["fold_change"] < 0) | (deseqresults["fold_change"] > 0)), "red", "black"))
+    plt.scatter(result_df["fold_change"], -np.log10(result_df["p_value_corrected"]), c = np.where((deseqresults["p_value_corrected"] < 0.05)  & ((deseqresults["fold_change"] < 0) | (deseqresults["fold_change"] > 0)), "red", "black"))
 
     #using threshold of p value 5% and taking top 10
     deseqresults = deseqresults[deseqresults['p_value_corrected'] < 0.05]
