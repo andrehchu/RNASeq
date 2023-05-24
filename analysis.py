@@ -129,7 +129,7 @@ def volcano_plot(results):
     #plt.savefig("VolcanoPlotDeseq2.png")
     plt.show()
     
-def ma_plot(results, pval_thresh){
+def ma_plot(results, pval_thresh):
     result_df = pd.concat(results)
 
     plt.figure(figsize=(10,10))
@@ -141,8 +141,6 @@ def ma_plot(results, pval_thresh){
     plt.title('TBD')
 
     plt.scatter(result_df["log2fold_change"], result_df["mean_normalizedcounts"], c = np.where((result_df["p_value_corrected"] < pval_thresh), "red", "black"))
-
-}
 
 
 def main():
