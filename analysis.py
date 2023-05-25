@@ -36,6 +36,17 @@ def normalize_counts(df, pseudocount=1):
         print("Negative values after normalization: ", df[df < 0])
     return df
 
+def base_means(df):
+    baseMeans = []
+    for index,row in df.iterrows:
+        sum = 0
+        numSamples = 0
+        for column in df.columns:
+            sum += row[column]
+            numSamples += 1
+        baseMeans.append(sum/numSamples)
+    return baseMeans
+
 def batch_correction(df, n_components=2, pseudocount=0.1):
     #Identify constant rows
     constant_rows = df.index[df.nununiqe(axis=1) <= 1]
@@ -86,12 +97,14 @@ def differential_expression_analysis(countdata, metadata, padj_type):
         fold_changes = calculate_fold_changes(control_data, treatment_data)
         p_values = calculate_p_values(control_data, treatment_data)
         p_values_corrected = correct_p_values(p_values.values, padj_type)
+        base_means = base_means(countdata)
         result = pd.DataFrame({
             'gene_id': countdata.index,
             'condition': condition,
             'log2fold_change': fold_changes,
             'p_value': p_values,
             'p_value_corrected': p_values_corrected,
+            'base_means': base_means,
         })
         results.append(result)
     return results
@@ -100,23 +113,19 @@ def save_results(results, output_file):
     result_df = pd.concat(results)
     result_df.to_csv(output_file, sep='\t', index=False)
 
-def volcano_plot(results):
+def volcano_plot(results, pval_thresh):
     result_df = pd.concat(results)
 
     plt.figure(figsize=(10,10))
 
-    pvalue_threshold = 0.05
     fc_threshold = 0
-
-    #result_df = result_df.rename({"Unnamed: 0" : "gene_id"}, axis='columns')
-
 
     plt.xlabel('log2FoldChange') #x label
     plt.ylabel('-log10pvalue') #y label
     plt.title('Differential Expression')
 
     #plot scatter plot while labeling significant expression with red based on padj<0.05 AND log2fold > 0 or log2fold < 0
-    plt.scatter(result_df["log2fold_change"], -np.log10(result_df["p_value_corrected"]), c = np.where((result_df["p_value_corrected"] < 0.05)  & ((result_df["log2fold_change"] < 0) | (result_df["log2fold_change"] > 0)), "red", "black"))
+    plt.scatter(result_df["log2fold_change"], -np.log10(result_df["p_value_corrected"]), c = np.where((result_df["p_value_corrected"] < pval_thresh)  & ((result_df["log2fold_change"] < 0) | (result_df["log2fold_change"] > 0)), "red", "black"))
 
     #using threshold of p value 5% and taking top 10
     result_df = result_df[result_df['p_value_corrected'] < 0.05]
@@ -129,13 +138,13 @@ def volcano_plot(results):
     #plt.savefig("VolcanoPlotDeseq2.png")
     plt.show()
     
-def ma_plot(results, pval_thresh):
+def ma_plot(results, pval_thresh, lower_ybound, upper_ybound):
     result_df = pd.concat(results)
 
     plt.figure(figsize=(10,10))
 
     #color points red if p value is less than 0.1 or choose other threshold value
-
+    plt.ylim(lower_ybound, upper_ybound)
     plt.xlabel('Mean of Normalized Counts') #x label
     plt.ylabel('log2FoldChange') #y label
     plt.title('TBD')
@@ -161,7 +170,7 @@ def main():
     countdata = batch_correction(countdata)
     results = differential_expression_analysis(countdata, metadata, pval_adj)
     save_results(results, outfile)
-    volcano_plot(results)
+    volcano_plot(results, pval_thresh)
     ma_plot(results, pval_thresh)
 
 if __name__ == "__main__":
