@@ -26,14 +26,34 @@ def define_metadata(df):
     }, index=df.columns)
     return metadata
 
-def normalize_counts(df, pseudocount=1):
-    df = df.replace(0, pseudocount)
-    gm = df.prod(axis=1) ** (1.0 / len(df.columns))
-    df = df.div(gm, axis=0)
-    size_factors = df.median(axis=0)
-    df = df.div(size_factors, axis=1)
-    if (df < 0).any().any():
-        print("Negative values after normalization: ", df[df < 0])
+def normalize_counts(df, psedudocount=1):
+    df = df.replace(0, psedudocount)
+    # Find the geometric mean of samples for each gene
+    geomeans = []
+    for index, row in df.iterrows():
+        geomean = 1
+        for sample in df.columns[1:].values.tolist():
+            geomean *= row[sample]
+        geomean = np.sqrt(geomean)
+        geomeans.append(geomean)
+
+    # Find the ratios (sample/ref) for each sample
+    df_ratios = df.copy()
+    for index, row in df_ratios.iterrows():
+        for sample in df_ratios.columns[1:].values.tolist():
+            df_ratios.at[index,sample] = (df_ratios.at[index,sample]) / geomeans[index]
+
+    # Find size factors for each sample/col
+    sfs = []
+    for column in df_ratios.columns[1:]:
+        sfs.append(np.median(df_ratios[column].tolist()))
+
+    # Divide each sample value by the size factor to normalize
+    i = 0
+    for column in df.columns[1:].values.tolist():
+        df[column] = df[column].div(sfs[i])
+        i = i + 1
+
     return df
 
 def base_means(df):
