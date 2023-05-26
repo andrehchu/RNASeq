@@ -12,7 +12,7 @@ Small test example command:
 
 analysis -c GSE221626_counts.txt -o -padj bonferroni -pval_thresh 0.5
 
-# Complete usage insturctions
+# Complete usage instructions
 There are four required inputs for [analysis]
 
 * -c FILE, --countdata FILE: txt file that contains RNA-seq count data
