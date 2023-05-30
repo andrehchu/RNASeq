@@ -2,6 +2,7 @@
 
 # Setup:
 ``` https://github.com/andrehchu/RNASeq ```
+
 ``` cd RNASeq ```
 
 # Usage Instructions:
