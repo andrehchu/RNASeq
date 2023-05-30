@@ -1,7 +1,7 @@
 # Basic Usage Instructions:
 
 # Setup:
-``` https://github.com/andrehchu/RNASeq ```
+``` git clone https://github.com/andrehchu/RNASeq ```
 
 ``` cd RNASeq ```
 
