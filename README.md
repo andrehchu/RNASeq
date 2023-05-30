@@ -7,7 +7,7 @@ This is our CSE 185 Project that performs differential gene expression analysis 
 Our code is currently just a python script and has not been made into a package yet.
 The basic usage of [207analysis.py] is as follows:
 
-``` python3 207analysis.py [-c countdata.txt] [-o outputfile.csv] [-padj float] [-pval_thresh float ```
+``` python3 207analysis.py [-c countdata.txt] [-o outputfile.csv] [-padj float] [-pval_thresh float] ```
 
 Small test example command:
 
