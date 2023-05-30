@@ -4,22 +4,22 @@ This is our CSE 185 Project that performs differential gene expression analysis 
 # Installation instructions
 
 # Basic usage instructions
-The basic usage of [analysis.py] is as follows:
+Our code is currently just a python script and has not been made into a package yet.
+The basic usage of [207analysis.py] is as follows:
 
-analysis [-c countdata.txt] [-o outputfile.txt]
+``` python3 207analysis.py [-c countdata.txt] [-o outputfile.csv] [-padj float] [-pval_thresh float ```
 
 Small test example command:
 
-analysis -c GSE221626_counts.txt -o -padj bonferroni -pval_thresh 0.5
+``` python3 207analysis.py -c GSE221626_counts.txt -o -padj bonferroni -pval_thresh 0.5 ```
 
 # Complete usage instructions
 There are four required inputs for [analysis]
 
-* -c FILE, --countdata FILE: txt file that contains RNA-seq count data
-* -o FILE, --output_file:
-* -padj PADJ, --pvalue_adjusted PADJ: options bonferroni or fdr_bh for the padjusted values
-* -pval_thresh THRESH, --pvalue_threshold THRESH: decimal value that specifies the pvalue threshold for volcano and MA-plots
+* ```-c FILE ```, ```--countdata FILE ```: txt file that contains RNA-seq count data
+* ```-o FILE, --output_file```: csv files that contains the output data
+* ```-padj PADJ```, ```--pvalue_adjusted PADJ```: options bonferroni or fdr_bh for the padjusted values
+* ```-pval_thresh THRESH```, ```--pvalue_threshold THRESH```: decimal value that specifies the pvalue threshold for volcano and MA-plots
 
 # Credits
 
-# Bonus:badges
