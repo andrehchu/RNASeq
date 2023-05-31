@@ -7,7 +7,9 @@
 
 # Usage Instructions:
 Make sure the necessary packages are downloaded before running the program!
+
 If necessary: use the following commands:
+
     1. pandas: ```pip install pandas```
     2. statsmodels: ```pip install statsmodels```
     3. scikit-learn: ```pip install scikit-learn```
