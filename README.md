@@ -17,7 +17,6 @@ If necessary: use the following commands:
 5. numpy: ```pip install numpy```
 6. scipy: ```pip install scipy```
 
-``` python3 207analysis.py -c [RNA-seq count data file] -o [output_file] -s [sorted output if present]  ```
 # Use the count data file I have provided and run the command:
 ``` python3 207analysis.py -c GSE207721_raw_counts_GRCh38.p13_NCBI.tsv -o [output file name of your choice] -s ```
 
