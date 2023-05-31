@@ -165,11 +165,11 @@ def ma_plot(results, pval_thresh, lower_ybound, upper_ybound):
 
     #color points red if p value is less than 0.1 or choose other threshold value
     plt.ylim(lower_ybound, upper_ybound)
-    plt.xlabel('Mean of Normalized Counts') #x label
+    plt.xlabel('Means of Normalized Counts') #x label
     plt.ylabel('log2FoldChange') #y label
     plt.title('MA-Plot')
     plt.savefig("MAPlot.png")
-    plt.scatter(result_df["log2fold_change"], result_df["mean_normalizedcounts"], c = np.where((result_df["p_value_corrected"] < pval_thresh), "red", "black"))
+    plt.scatter(result_df["log2fold_change"], result_df["base_means"], c = np.where((result_df["p_value_corrected"] < pval_thresh), "red", "black"))
 
 
 def main():

@@ -1,7 +1,7 @@
 library("DESeq2")
 
 # import count data
-countdata <- read.table("~/GSE207721_raw_counts_GRCh38.p13_NCBI.tsv", header=TRUE, row.names=1, sep = '\t')
+countdata <- read.table("~/GSE221626_counts.txt", header=TRUE, row.names=1, sep = '\t')
 
 # remove 'WT_R26-Adar1p150KI' column as it has only one sample
 countdata <- countdata[, -ncol(countdata)]
@@ -10,7 +10,7 @@ countdata[] <- lapply(countdata, round)
 # define metadata
 metadata <- data.frame(
   row.names = colnames(countdata),
-  condition = factor(c('GSM6311037', 'GSM6311038', 'GSM6311039',	'GSM6311040', 'GSM6311041', 'GSM6311042', 'GSM6311043', 'GSM6311044',	'GSM6311045'))
+  condition = factor(c(rep("WT", 3), rep("Adar1KI", 3), rep("Adar1_p110KI", 3), rep("Adar1_p150KI", 3), rep("E861AKI", 3)))
 )
 
 # create DESeqDataSet
