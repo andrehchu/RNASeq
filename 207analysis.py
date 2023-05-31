@@ -5,6 +5,7 @@ from sklearn.decomposition import PCA
 import argparse
 import numpy as np
 from scipy.stats import gmean, nbinom, poisson
+from scipy.stats import ttest_ind
 
 
 def load_data(file_path):
@@ -104,7 +105,7 @@ def calculate_p_values(control_data, treatment_data):
 
 def correct_p_values(p_values):
     # before method = 'fdr_bh', now trying bonferroni
-    _, p_values_corrected, _, _ = smm.multipletests(p_values, method='fdr_bh')
+    _, p_values_corrected, _, _ = smm.multipletests(p_values, method='bonferroni')
     return p_values_corrected
 
 def differential_expression_analysis(countdata, metadata, base_means_values, sorted):
