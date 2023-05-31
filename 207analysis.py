@@ -5,8 +5,8 @@ from sklearn.preprocessing import scale
 from sklearn.decomposition import PCA
 import argparse
 import numpy as np
-from scipy.stats import gmean
-from scipy.stats import nbinom
+from scipy.stats import gmean, nbinom, poisson
+from statsmodels.discrete.discrete_model import NegativeBinomial
 
 def load_data(file_path):
     # read in count data
@@ -29,7 +29,7 @@ def define_metadata(df):
     }, index=df.columns)
     return metadata
 
-def normalize_counts(df, pseudocount=0.001):
+def normalize_counts(df, pseudocount=0.01):
     df = df.replace(0, pseudocount)
     # Find the geometric mean of samples for each gene
     geomeans = gmean(df, axis=1)
@@ -43,7 +43,7 @@ def normalize_counts(df, pseudocount=0.001):
 def base_means(df):
     return df.mean(axis=1).tolist()
 
-def batch_correction(df, n_components=2, pseudocount=0.001):
+def batch_correction(df, n_components=5, pseudocount=0.01):
     # Identify constant rows
     constant_rows = df.index[df.nunique(axis=1) <= 1]
     
@@ -65,7 +65,7 @@ def batch_correction(df, n_components=2, pseudocount=0.001):
     
     return corrected
 
-def calculate_fold_changes(control_data, treatment_data, pseudocount=0.001):
+def calculate_fold_changes(control_data, treatment_data, pseudocount=0.01):
     fc = (treatment_data.mean(axis=1) + pseudocount) / (control_data.mean(axis=1) + pseudocount)
     if fc.min() <= 0:
         print('Invalid values in fold changes:', fc[fc <= 0])
@@ -79,16 +79,32 @@ def calculate_p_values(control_data, treatment_data):
         control_var = control_data.loc[gene_id].var()
         treatment_mean = treatment_data.loc[gene_id].mean()
 
-        # Estimating the parameters of the negative binomial distribution
-        n = control_mean**2 / (control_var - control_mean) if control_var > control_mean else 1
-        p = n / (n + control_mean) if control_var > control_mean else 0.5
+        control_var_shrunk = 0.25 * control_var + 0.25 * control_data.var().mean()
 
-        p_value = nbinom.cdf(treatment_mean, n, p)
+        # Estimating the parameters of the negative binomial distribution
+        if control_var_shrunk > control_mean:
+            n = control_mean**2 / (control_var_shrunk - control_mean)
+            p = n / (n + control_mean)
+            
+            # Calculate the two-sided p-value as this study cares for both up and down regulated genes
+            if treatment_mean > control_mean:
+                p_value = 2 * nbinom.sf(treatment_mean - 1, n, p)
+            else:
+                p_value = 2 * nbinom.cdf(treatment_mean, n, p)
+
+        else:
+            # Calculate the two-sided p-value for the Poisson distribution
+            if treatment_mean > control_mean:
+                p_value = 2 * poisson.sf(treatment_mean - 1, control_mean)
+            else:
+                p_value = 2 * poisson.cdf(treatment_mean, control_mean)
+
         p_values.append(p_value)
 
     return pd.Series(p_values, index=control_data.index)
 
 def correct_p_values(p_values):
+    # before method = 'fdr_bh', now trying bonferroni
     _, p_values_corrected, _, _ = smm.multipletests(p_values, method='fdr_bh')
     return p_values_corrected
 
