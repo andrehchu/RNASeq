@@ -1,12 +1,11 @@
 import pandas as pd
-from scipy import stats
 import statsmodels.stats.multitest as smm
 from sklearn.preprocessing import scale
 from sklearn.decomposition import PCA
 import argparse
 import numpy as np
 from scipy.stats import gmean, nbinom, poisson
-from statsmodels.discrete.discrete_model import NegativeBinomial
+
 
 def load_data(file_path):
     # read in count data
