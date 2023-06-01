@@ -12,6 +12,7 @@ setup(
         'statsmodels',
         'scikit-learn',
         'argparse',
+        'matplotlib'
     ],
     entry_points='''
         [console_scripts]
