@@ -6,7 +6,7 @@ import argparse
 import numpy as np
 from scipy.stats import gmean, nbinom, poisson
 from scipy.stats import ttest_ind
-import matplotlib as plt
+import matplotlib.pyplot as plt
 
 
 def load_data(file_path):
@@ -143,17 +143,16 @@ def save_results(results, output_file):
 def volcano_plot(results, pval_thresh):
     result_df = pd.concat(results)
 
-    #plt.figure(figsize=(10,10))
+    plt.figure(figsize=(10,10))
 
     fc_threshold = 0
-    plt.ylim(0, 50)
+    plt.ylim(0, 20)
     plt.xlabel('log2FoldChange') #x label
     plt.ylabel('-log10pvalue') #y label
     plt.title('Differential Expression')
 
     #plot scatter plot while labeling significant expression with red based on padj<0.05 AND log2fold > 0 or log2fold < 0
     plt.scatter(result_df["log2fold_change"], -np.log10(result_df["p_value_corrected"]), c = np.where((result_df["p_value_corrected"] < pval_thresh)  & ((result_df["log2fold_change"] < 0)| (result_df["log2fold_change"] > 0)), "red", "black"))
-    #plt.scatter(result_df["log2fold_change"], -np.log10(result_df["p_value_corrected"]))
     #using threshold of p value 5% and taking top 10
     result_df = result_df[result_df['p_value_corrected'] < pval_thresh]
     pSort =  result_df.sort_values('p_value_corrected')
