@@ -8,10 +8,10 @@
 # Usage Instructions:
 Make sure the necessary packages are downloaded before running the program!
 
-If necessary: use the following commands:
+# If necessary: use the following commands:
 
 Run the following command to install/upgrade the necessary packages:
-```pip install -r prereqs.txt
+``` pip install -r prereqs.txt ```
 
 # Use the count data file I have provided and run the command:
 ``` pySeqDiff -c pySeqDiff/GSE207721_raw_counts_GRCh38.p13_NCBI.tsv -o out.txt -s ```
