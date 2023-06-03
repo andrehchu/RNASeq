@@ -10,13 +10,8 @@ Make sure the necessary packages are downloaded before running the program!
 
 If necessary: use the following commands:
 
-1. pandas: ```pip install pandas```
-2. statsmodels: ```pip install statsmodels```
-3. scikit-learn: ```pip install scikit-learn```
-4. argparse: ```pip install argparse```
-5. numpy: ```pip install numpy```
-6. scipy: ```pip install scipy```
-7. matplotlib: ```pip install matplotlib```
+Run the following command to install/upgrade the necessary packages:
+```pip install -r prereqs.txt
 
 # Use the count data file I have provided and run the command:
 ``` pySeqDiff -c pySeqDiff/GSE207721_raw_counts_GRCh38.p13_NCBI.tsv -o out.txt -s ```
