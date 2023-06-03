@@ -5,13 +5,14 @@
 
 ``` pip install . ```
 
-# Usage Instructions:
 Make sure the necessary packages are downloaded before running the program!
 
 
 Run the following command to install/upgrade the necessary packages:
 
 ``` pip install -r prereqs.txt ```
+
+# Usage Instructions:
 
 Example test: Use the count data file provided to run the following command:
 
