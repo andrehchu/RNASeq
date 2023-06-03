@@ -8,9 +8,9 @@
 # Usage Instructions:
 Make sure the necessary packages are downloaded before running the program!
 
-# If necessary: use the following commands:
 
 Run the following command to install/upgrade the necessary packages:
+
 ``` pip install -r prereqs.txt ```
 
 # Use the count data file I have provided and run the command:
