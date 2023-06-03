@@ -13,7 +13,8 @@ Run the following command to install/upgrade the necessary packages:
 
 ``` pip install -r prereqs.txt ```
 
-# Use the count data file I have provided and run the command:
+Example test: Use the count data file provided to run the following command:
+
 ``` pySeqDiff -c pySeqDiff/GSE207721_raw_counts_GRCh38.p13_NCBI.tsv -o out.txt -s ```
 
 # How to interpret the output:
