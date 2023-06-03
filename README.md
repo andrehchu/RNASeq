@@ -3,7 +3,7 @@
 # Setup:
 ``` git clone https://github.com/andrehchu/RNASeq ```
 
-``` pip install .```
+``` pip install . ```
 
 # Usage Instructions:
 Make sure the necessary packages are downloaded before running the program!
