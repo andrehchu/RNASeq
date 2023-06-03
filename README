@@ -16,6 +16,7 @@ If necessary: use the following commands:
 4. argparse: ```pip install argparse```
 5. numpy: ```pip install numpy```
 6. scipy: ```pip install scipy```
+7. matplotlib: ```pip install matplotlib```
 
 # Use the count data file I have provided and run the command:
 ``` pySeqDiff -c pySeqDiff/GSE207721_raw_counts_GRCh38.p13_NCBI.tsv -o out.txt -s ```
