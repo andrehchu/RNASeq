@@ -1,5 +1,5 @@
 # Introduction
-pySeqDiff is a Python package designed to perform differential gene expression analysis on raw RNA-seq count data. The aim of this project was to replicate the method used in the R package, DESeq2, in order to better understand how differential gene expression analysis is performed, and to allow this kind of analyis to be performed using Python.
+pySeqDiff is a Python package designed to perform differential gene expression analysis on raw RNA-seq count data. The aim of this project was to replicate the method used in the R package, DESeq2, in order to better understand how differential gene expression analysis is performed, and to allow this kind of analyis to be performed using Python. Our tool has a similar output file format as DESeq2, and also generates a volcano plot and MA plot to the output directory.
 
 We appreciate any feedback. This tool was developed by students at UCSD as a part of a project for CSE 185: Advanced Bioinformatics Laboratory in Spring 2023. 
 
