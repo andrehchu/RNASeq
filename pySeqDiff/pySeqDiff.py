@@ -26,7 +26,7 @@ def load_data(file_path):
 
 def define_metadata(df):
     metadata = pd.DataFrame({
-        'condition': ['WT' if col in ['GSM6311037', 'GSM6311038', 'GSM6311041', 'GSM6311042', 'GSM6311043'] else 'Experimental' for col in df.columns]
+        'condition': ['WT' if col in ['GSM6311037', 'GSM6311038'] else 'Experimental' for col in df.columns]
     }, index=df.columns)
     return metadata
 
@@ -44,7 +44,7 @@ def normalize_counts(df, pseudocount=0.01):
 def base_means(df):
     return df.mean(axis=1).tolist()
 
-def batch_correction(df, n_components=5, pseudocount=0.01):
+def batch_correction(df, n_components=2, pseudocount=0.01):
     # Identify constant rows
     constant_rows = df.index[df.nunique(axis=1) <= 1]
     
