@@ -23,7 +23,9 @@ Run the following command to install/upgrade the necessary packages:
 
 Type ``` pySeqDiff --help ``` for more usage information and description of arguments.
 
-## Example test: Use the count data file provided to run the following command:
+## Example test:
+
+Use the count data file provided to run the following command:
 
 ``` pySeqDiff -c GSE207721_kyse150_raw.txt -o pySeqDiff_kyse150_results.txt -pval_thresh 0.05 -s ```
 
