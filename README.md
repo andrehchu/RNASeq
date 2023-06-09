@@ -8,6 +8,8 @@ We appreciate any feedback. This tool was developed by students at UCSD as a par
 ## Setup:
 ``` git clone https://github.com/andrehchu/RNASeq ```
 
+``` cd RNASeq ```
+
 ``` pip install . ```
 
 Make sure the necessary packages are downloaded before running the program!
@@ -27,7 +29,7 @@ Type ``` pySeqDiff --help ``` for more usage information and description of argu
 
 Use the count data file provided to run the following command:
 
-``` pySeqDiff -c GSE207721_kyse150_raw.txt -o pySeqDiff_kyse150_results.txt -pval_thresh 0.05 -s ```
+``` pySeqDiff -c pySeqDiff/GSE207721_kyse150_raw.txt -o pySeqDiff_kyse150_results.txt -pval_thresh 0.05 -s ```
 
 # How to interpret the output:
  The count data file used for testing is obtained from this study 'https://pubmed.ncbi.nlm.nih.gov/35932580/'. The output shows the gene ID, if it is experimental or wildtype, its log 2 fold change, p-value and adjusted p-value, and the corresponding base mean. The data can be found at GEO Accession Viewer ID GSE207721, where we concatenated data from the kyse150 cell line raw read counts (https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi).

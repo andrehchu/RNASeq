@@ -1,0 +1,17 @@
+    We benchmarked pySeqDiff against Deseq2 by running both software with RNA Seq count data for the cell line 
+kyse150 from a txt file available in the paper KDM2A plays a dual role in regulating the expression of 
+malignancy-related genes in esophageal squamous cell carcinoma. Like DESeq2, the output of pySeqDiff indicates 
+that there are genes that are differentially expressed in our dataset that are statistically significant (p<0.05). 
+Our output also indicates that there are genes that are not differentially expressed with significance, which 
+indicates that our tool is not considering every gene significant.
+    Among the top five most significant differentially expressed genes ordered by smallest p-value, we found one gene 
+that was reported by both pySeqDiff and DESeq2 (See Table 1 and Table 2). This indicates that our tool is at least
+on the right track of correctly identifying differential expression. Additionally, within the context of the study the
+dataset was sourced from, gene 7057 is related to tumor growth. This means that our tool is able to identify that 
+KDM2A likely has a role in the regulation of oncogenesis, which was the conclusion of the original study. Our tool 
+identified that gene 7057 is downregulated by KDM2A, while DESeq2 identified gene 7057 as upregulated by KDM2A. 
+This difference is not very relevant as due to our knowledge from the study, KDM2A is responsible for both the up 
+and down regulation of tumor growth genes, and therefore we are unable to determine which tool is correct.
+    Looking at the visualization of the output data using volcano plots (Figure 1 and Figure 2), we can see that 
+pySeqDiff did not identify as many significantly differentially expressed genes as DESeq2 did. We hypothesize that 
+this might be due to DESeq2 better handling of dispersion, as well as the accuracy of their statistical testing.
