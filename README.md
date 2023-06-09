@@ -33,10 +33,14 @@ Use the count data file provided to run the following command:
  The count data file used for testing is obtained from this study 'https://pubmed.ncbi.nlm.nih.gov/35932580/'. The output shows the gene ID, if it is experimental or wildtype, its log 2 fold change, p-value and adjusted p-value, and the corresponding base mean. The data can be found at GEO Accession Viewer ID GSE207721, where we concatenated data from the kyse150 cell line raw read counts (https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi).
 
 # References
+<pre>
 Fatemeh Seyednasrollah et. al. “Comparison of software packages for detecting differential expression in RNA-seq studies”, Briefings in Bioinformatics, Volume 16, Issue 1, January 2015, Pages 59–70, https://doi.org/10.1093/bib/bbt086.
+
 Khetani, Radhika. “Count Normalization with DEDeq2.” Introduction to DGE - ARCHIVED, 26 Apr. 2017, hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html. 
 Love, M.I. et. al. “Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2”. Genome Biol 15, 550 (2014). https://doi.org/10.1186/s13059-014-0550-8.
+
 Wang, Jian et. al. “KDM2A plays a dual role in regulating the expression of malignancy-related genes in esophageal squamous cell carcinoma”, Biochemical and Biophysical Research Communications, Volume 624, 2022, Pages 53-58, ISSN 0006-291X, https://doi.org/10.1016/j.bbrc.2022.07.035.
+</pre>
 
 # Acknowledgements
 Thank you to professor Melissa Gymrek, teaching assistants Luisa Amaral, and Ryan Eveloff, as well as peers for guidance and support.
