@@ -155,12 +155,12 @@ def volcano_plot(results, pval_thresh):
     plt.scatter(result_df["log2fold_change"], -np.log10(result_df["p_value_corrected"]), c = np.where((result_df["p_value_corrected"] < pval_thresh)  & ((result_df["log2fold_change"] < 0)| (result_df["log2fold_change"] > 0)), "red", "black"))
     #plt.scatter(result_df["log2fold_change"], -np.log10(result_df["p_value_corrected"]))
     #using threshold of p value 5% and taking top 10
-    result_df = result_df[result_df['p_value_corrected'] < pval_thresh]
-    pSort =  result_df.sort_values('p_value_corrected')
-    top_ten = pSort.iloc[:10]
+    #result_df = result_df[result_df['p_value_corrected'] < pval_thresh]
+    #pSort =  result_df.sort_values('p_value_corrected')
+    #top_ten = pSort.iloc[:10]
 
-    for index, row in top_ten.iterrows():
-        plt.annotate(row["gene_id"], (row["log2fold_change"], -np.log10(row["p_value"])))
+    #for index, row in top_ten.iterrows():
+    #    plt.annotate(row["gene_id"], (row["log2fold_change"], -np.log10(row["p_value"])))
         
     plt.savefig("VolcanoPlot.png")
     plt.show()
