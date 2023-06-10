@@ -33,9 +33,9 @@ Use the count data file provided to run the following command:
 
 You may encounter a warning message as such
 
-```/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/pandas/core/arraylike.py:396: RuntimeWarning: divide by zero encountered 
+/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/pandas/core/arraylike.py:396: RuntimeWarning: divide by zero encountered 
 in log10
-  result = getattr(ufunc, method)(*inputs, **kwargs) ```
+  result = getattr(ufunc, method)(*inputs, **kwargs)
 
 This can be ignored and will not affect the output file or plots.
 
