@@ -31,6 +31,14 @@ Use the count data file provided to run the following command:
 
 ``` pySeqDiff -c pySeqDiff/GSE207721_kyse150_raw.txt -o pySeqDiff_kyse150_results.txt -pval_thresh 0.05 -s ```
 
+You may encounter a warning message as such
+
+```/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/pandas/core/arraylike.py:396: RuntimeWarning: divide by zero encountered 
+in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs) ```
+
+This can be ignored and will not affect the output file or plots.
+
 # How to interpret the output:
  The count data file used for testing is obtained from this study 'https://pubmed.ncbi.nlm.nih.gov/35932580/'. The output shows the gene ID, if it is experimental or wildtype, its log 2 fold change, p-value and adjusted p-value, and the corresponding base mean. The data can be found at GEO Accession Viewer ID GSE207721, where we concatenated data from the kyse150 cell line raw read counts (https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi).
 
