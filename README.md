@@ -31,7 +31,7 @@ Use the count data file provided to run the following command:
 
 ``` pySeqDiff -c pySeqDiff/GSE207721_kyse150_raw.txt -o pySeqDiff_kyse150_results.txt -pval_thresh 0.05 -s ```
 
-You may encounter a warning message as such
+You may encounter a warning message as such:
 
 /Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/pandas/core/arraylike.py:396: RuntimeWarning: divide by zero encountered 
 in log10
